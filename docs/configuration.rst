@@ -1026,6 +1026,12 @@ Configuration related to the two-factor authentication feature.
 
     Default: ``no-reply@localhost``.
 
+.. py:data:: SECURITY_TWO_FACTOR_RESCUE_CODES
+
+    Allows users to receive two factor codes by email as a backup if they lose their authenticator device.
+
+    Default: ``True``.
+
 .. py:data:: SECURITY_EMAIL_SUBJECT_TWO_FACTOR
 
     Sets the subject for the two factor feature.

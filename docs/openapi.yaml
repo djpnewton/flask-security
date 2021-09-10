@@ -1099,22 +1099,22 @@ paths:
               type: object
               properties:
                 help-setup:
-                  description: Either 'lost_device' or 'no_mail_access'.
+                  description: Either 'email_rescue_code' or 'email_admin'.
                   type: string
-                  example: "lost_device"
+                  example: "email_rescue_code"
           application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
                 help_setup:
-                  description: Either 'lost_device' or 'no_mail_access'.
+                  description: Either 'email_rescue_code' or 'email_admin'.
                   type: string
-                  example: "lost_device"
+                  example: "email_rescue_code"
       responses:
         200:
           description: >
-            If 'lost_device' was specified, then an authentication code was sent to the email
-            on record for the user. If 'no_mail_access' then an email was sent to administrator address
+            If 'email_rescue_code' was specified (and SECURITY_TWO_FACTOR_RESCUE_CODES allows), then an authentication code was sent to the email
+            on record for the user. If 'email_admin' then an email was sent to administrator address
             specified by SECURITY_TWO_FACTOR_RESCUE_MAIL.
           content:
             application/json:

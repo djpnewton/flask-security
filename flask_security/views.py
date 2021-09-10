@@ -947,7 +947,7 @@ def two_factor_token_validation():
             cv("TWO_FACTOR_VERIFY_CODE_TEMPLATE"),
             two_factor_rescue_form=rescue_form,
             two_factor_verify_code_form=form,
-            problem=None,
+            help_request=None,
             **_ctx("tf_token_validation"),
         )
 
@@ -983,27 +983,27 @@ def two_factor_rescue():
         tf_clean_session()
         return _tf_illegal_state(form, _security.login_url)
 
-    rproblem = ""
+    rhelp_request = ""
     if form.validate_on_submit():
-        problem = form.data["help_setup"]
-        rproblem = problem
-        # if the problem is that user can't access his device, w
-        # e send him code through mail
-        if problem == "lost_device":
+        help_request = form.data["help_setup"]
+        rhelp_request = help_request
+        # if the help_request is that user would like the code sent via
+        # via email, we send him the code through mail
+        if help_request == "email_rescue_code" and cv("TWO_FACTOR_RESCUE_CODES"):
             msg = form.user.tf_send_security_token(
                 method="email",
                 totp_secret=form.user.tf_totp_secret,
                 phone_number=getattr(form.user, "tf_phone_number", None),
             )
             if msg:
-                rproblem = ""
+                rhelp_request = ""
                 form.help_setup.errors.append(msg)
                 if _security._want_json(request):
                     return base_render_json(
                         form, include_user=False, error_status_code=500
                     )
         # send app provider a mail message regarding trouble
-        elif problem == "no_mail_access":
+        elif help_request == "email_admin":
             send_mail(
                 cv("EMAIL_SUBJECT_TWO_FACTOR_RESCUE"),
                 cv("TWO_FACTOR_RESCUE_MAIL"),
@@ -1022,7 +1022,7 @@ def two_factor_rescue():
         two_factor_verify_code_form=code_form,
         two_factor_rescue_form=form,
         rescue_mail=cv("TWO_FACTOR_RESCUE_MAIL"),
-        problem=rproblem,
+        help_request=rhelp_request,
         **_ctx("tf_token_validation"),
     )
 

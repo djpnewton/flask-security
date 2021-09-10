@@ -708,16 +708,18 @@ class TwoFactorRescueForm(Form):
     """The Two-factor Rescue validation form"""
 
     help_setup = RadioField(
-        "Trouble Accessing Your Account?",
+        "How would you like to receive help?",
         choices=[
-            ("lost_device", "Can not access mobile device?"),
-            ("no_mail_access", "Can not access mail account?"),
+            ("email_rescue_code", "Send the two factor code to my email address"),
+            ("email_admin", "Email the admin requesting help to recover my account"),
         ],
     )
     submit = SubmitField(get_form_field_label("submit"))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if not cv("TWO_FACTOR_RESCUE_CODES"):
+            self.help_setup.choices.pop(0)
 
     def validate(self):
         if not super().validate():

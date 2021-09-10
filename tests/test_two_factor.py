@@ -464,7 +464,7 @@ def test_two_factor_flag(app, client):
     logout(client)
 
     # check when two_factor_rescue function should not appear
-    rescue_data_json = dict(help_setup="lost_device")
+    rescue_data_json = dict(help_setup="email_rescue_code")
     response = client.post(
         "/tf-rescue",
         json=rescue_data_json,
@@ -476,11 +476,11 @@ def test_two_factor_flag(app, client):
     data = dict(email="gal2@lp.com", password="password")
     response = client.post("/login", data=data, follow_redirects=True)
     assert b"Please enter your authentication code" in response.data
-    rescue_data = dict(help_setup="lost_device")
+    rescue_data = dict(help_setup="email_rescue_code")
     response = client.post("/tf-rescue", data=rescue_data, follow_redirects=True)
     message = b"The code for authentication was sent to your email address"
     assert message in response.data
-    rescue_data = dict(help_setup="no_mail_access")
+    rescue_data = dict(help_setup="email_admin")
     response = client.post("/tf-rescue", data=rescue_data, follow_redirects=True)
     message = b"A mail was sent to us in order to reset your application account"
     assert message in response.data
@@ -597,7 +597,7 @@ def test_rescue_json(app, client):
     headers = {"Accept": "application/json", "Content-Type": "application/json"}
 
     # it's an error if not logged in.
-    rescue_data_json = dict(help_setup="lost_device")
+    rescue_data_json = dict(help_setup="email_rescue_code")
     response = client.post(
         "/tf-rescue",
         json=rescue_data_json,
@@ -611,7 +611,7 @@ def test_rescue_json(app, client):
     assert response.json["response"]["tf_required"]
 
     with app.mail.record_messages() as outbox:
-        rescue_data = dict(help_setup="lost_device")
+        rescue_data = dict(help_setup="email_rescue_code")
         response = client.post("/tf-rescue", json=rescue_data, headers=headers)
         assert response.status_code == 200
 
@@ -628,7 +628,7 @@ def test_rescue_json(app, client):
     # Try rescue with no email (should send email to admin)
     client.post("/login", json=data, headers=headers)
     with app.mail.record_messages() as outbox:
-        rescue_data = dict(help_setup="no_mail_access")
+        rescue_data = dict(help_setup="email_rescue_code")
         response = client.post("/tf-rescue", json=rescue_data, headers=headers)
         assert response.status_code == 200
 
@@ -1170,7 +1170,7 @@ def test_replace_send_code(app, get_message):
         data = dict(email="trp@lp.com", password="password")
         response = client.post("/login", data=data, follow_redirects=True)
         assert b"Please enter your authentication code" in response.data
-        rescue_data = dict(help_setup="lost_device")
+        rescue_data = dict(help_setup="email_rescue_code")
         response = client.post("/tf-rescue", data=rescue_data, follow_redirects=True)
         assert b"That didnt work out as we planned" in response.data
 

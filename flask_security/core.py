@@ -215,6 +215,7 @@ _default_config: t.Dict[str, t.Any] = {
         lambda: current_app.config.get("MAIL_DEFAULT_SENDER", "no-reply@localhost")
     ),
     "TWO_FACTOR_RESCUE_MAIL": "no-reply@localhost",
+    "TWO_FACTOR_RESCUE_CODES": True,
     "TOKEN_AUTHENTICATION_KEY": "auth_token",
     "TOKEN_AUTHENTICATION_HEADER": "Authentication-Token",
     "TOKEN_MAX_AGE": None,
